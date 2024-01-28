@@ -10,15 +10,22 @@ declare global {
   }
 }
 
+const SECRET_KEY = 'JDSOFJG';
+
 export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
-  const token: string[] | string | undefined = req.headers['x-access-token'] as string | undefined;
-  if(!token) return res.status(401).json({ auth: false, message: "No token provided" });
-  const SECRET_KEY = 'JDSOFJG';
+  const token = req.headers['x-access-token'] as string | undefined;
 
-  jwt.verify(token, SECRET_KEY, function(error: Error | null , decoded: any): any {
-    if(error) return res.status(500).json({ auth: false, message: "Failed to authenticate token."});
+  if(!token) {
+    return res.status(401).json({ auth: false, message: "No token provided" });
+  }
 
-    req.userId = decoded.indexOf;
+  jwt.verify(token, SECRET_KEY, (error: Error | null, decoded: any) => {
+    if(error) {
+      console.error(`Error verifying JWT: ${error.message}`);
+      return res.status(401).json({ auth: false, message: "Failed to authenticate token."});
+    }
+
+    req.userId = decoded.userId;
     next();
   })
 };
