@@ -1,6 +1,13 @@
 version: "3"
 
 services:
+  backend: 
+    image: node:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=${PORT}
+      - SECRET_KEY=${SECRET_KEY}
   postgres:
     image: postgres
     container_name: postgres-database
