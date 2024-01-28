@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import axios from "axios";
 
+const POKEMON_API_URL = 'https://pokeapi.co/api/v2/pokemon/';
 
 class Team {
   constructor (
@@ -9,38 +10,30 @@ class Team {
       public readonly pokemon3: string,
       public readonly pokemon4: string,
       public readonly pokemon5: string
-  ) {
-    this.pokemon1 = pokemon1;
-    this.pokemon2 = pokemon2;
-    this.pokemon3 = pokemon3;
-    this.pokemon4 = pokemon4;
-    this.pokemon5 = pokemon5;
-  }
+  ) {}
 
-  GetSquad() {
-    const PokemonTeam = [this.pokemon1, this.pokemon2, this.pokemon3, this.pokemon4, this.pokemon5];
-    return PokemonTeam;
+  GetSquad(): string[] {
+    return [this.pokemon1, this.pokemon2, this.pokemon3, this.pokemon4, this.pokemon5];
   }
-
 }
 
 export const createSquad = async (req: Request, res: Response) => {
   try {
     const { pokemon1, pokemon2, pokemon3, pokemon4, pokemon5 } = req.body;
 
-    const response = await axios.get('https://pokeapi.co/api/v2/pokemon/');
-    const pokemonList = response.data;
-    const namePokemon = pokemonList.results.map((pokemon: any) => pokemon.name);
+    const response = await axios.get(POKEMON_API_URL);
+    const pokemonList = response.data.results.map((pokemon: any) => pokemon.name);
 
-    if(!namePokemon.includes(pokemon1) || !namePokemon.includes(pokemon2) || !namePokemon.includes(pokemon3) || !namePokemon.includes(pokemon4) || !namePokemon.includes(pokemon5)) {
-      return res.status(401).json({ message: "this pokemon doesn't exist" });
+    const isPokemonValid = (pokemon: string) => pokemonList.includes(pokemon);
+    if(![pokemon1, pokemon2, pokemon3, pokemon4, pokemon5].every(isPokemonValid)) {
+      return res.status(400).json({ message: "One or more of the provided Pokemon does not exist"});
     }
 
     const created = new Team(pokemon1, pokemon2, pokemon3, pokemon4, pokemon5);
-    res.status(201).json({ message: "success", data: created.GetSquad()});
-    return;
+    res.status(201).json({ message: "Squad succesfully created", data: created.GetSquad() });
   } catch(error) {
-    return res.status(500).json({ message: "Server internal error", error: error});
+    console.error(`Error creating Pokemon squad: ${error}`);
+    res.status(500).json({ message: "Internal Server Error", error: error });
   }
 
 }
