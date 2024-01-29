@@ -9,11 +9,10 @@ services:
     depends_on:
       - postgres
   frontend:
-    image: frontend-pokemon
     build: ./frontend/
-    command: npm run dev
+    command: npm run preview
     ports:
-      - "80:5173"
+      - "8080:8080"
   postgres:
     image: postgres
     container_name: postgres-database
