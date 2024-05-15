@@ -55,6 +55,12 @@ Para encerrar todos os containers do Docker, execute:
 docker-compose down
 ```
 
+ou
+
+```bash
+docker-compose down
+```
+
 ## Rotas da Aplicação
 
 Aqui estão as principais rotas da aplicação e suas descrições.

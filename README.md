@@ -48,6 +48,9 @@ Execute o Dockeer Compose para iniciar os serviços:
 docker-compose up --build
 ```
 
+## Após iniciar a aplicação, inicie no seu navegador com:
+http://localhost:8080/
+
 
 ### Encerrando o Projeto
 Para encerrar todos os containers do Docker, execute:
